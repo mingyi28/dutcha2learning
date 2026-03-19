@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "name": "Dutch Learning App Word Database",
+    "version": "1.0.0",
+    "totalWords": 1200,
+    "languages": ["dutch", "chinese", "english"],
+    "fileFormat": "text/plain for individual languages, JSON for full data",
+    "generatedAt": "2026-01-29",
+    "description": "完整单词数据库，包含1200个荷兰语单词及其多语言翻译"
+  },
+  "wordStructure": {
+    "id": "单词唯一标识符",
+    "dutch": "荷兰语单词",
+    "chinese": "中文翻译",
+    "english": "英文翻译",
+    "example": "荷兰语例句",
+    "example_cn": "中文例句翻译",
+    "pronunciation": "发音标注（可选）"
+  },
+  "fileLocations": {
+    "dutch": "/src/data/words_dutch.txt",
+    "chinese": "/src/data/words_chinese.txt",
+    "english": "/src/data/words_english.txt",
+    "typescript": "/src/data/words.ts"
+  },
+  "notes": [
+    "纯文本文件格式：每行格式为 'id|word'，以#开头的行是注释",
+    "这种分离设计便于添加新的语言翻译（如法语、德语等）",
+    "words.ts文件提供TypeScript接口和同步/异步数据加载",
+    "实际应用中使用getWordsSync()或getWords()来获取单词数据"
+  ],
+  "exampleWords": [
+    {
+      "id": 1,
+      "dutch": "hallo",
+      "chinese": "你好",
+      "english": "hello",
+      "example": "Hallo, hoe gaat het?",
+      "example_cn": "你好，你好吗？",
+      "pronunciation": "[ˈɦɑloː]"
+    },
+    {
+      "id": 2,
+      "dutch": "goedemorgen",
+      "chinese": "早上好",
+      "english": "good morning",
+      "example": "Goedemorgen, iedereen!",
+      "example_cn": "大家早上好！",
+      "pronunciation": "[ˌɣudəˈmɔrɣə(n)]"
+    },
+    {
+      "id": 3,
+      "dutch": "dank je wel",
+      "chinese": "谢谢",
+      "english": "thank you",
+      "example": "Dank je wel voor je hulp.",
+      "example_cn": "谢谢你的帮助。",
+      "pronunciation": "[ˈdɑŋk jə ˈʋɛl]"
+    }
+  ]
+}

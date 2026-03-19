@@ -1,5 +1,5 @@
 import { UserProgress, Word } from '../types';
-import { words } from '../data/words';
+import { getWordsSync } from '../data/words';
 import { format, isSameDay, parseISO, subDays } from 'date-fns';
 
 const STORAGE_KEY = 'dutch_app_progress';
@@ -47,6 +47,7 @@ export const initTodayWords = (forceNew: boolean = false): Word[] => {
 
   // 如果不是强制刷新，且已经是今天，且有目标，直接返回目标单词
   if (!forceNew && progress.lastLearnDate === today && progress.todayTargetIds.length > 0) {
+    const words = getWordsSync();
     return words.filter(w => progress.todayTargetIds.includes(w.id));
   }
 
@@ -56,6 +57,7 @@ export const initTodayWords = (forceNew: boolean = false): Word[] => {
   progress.lastLearnDate = today;
 
   // 2. 选择新单词
+  const words = getWordsSync();
   const learnedSet = new Set(progress.learnedWordIds);
   let availableWords = words.filter(w => !learnedSet.has(w.id));
   
@@ -147,6 +149,7 @@ export const getReviewWords = (count: number = 10, forceRefresh: boolean = false
     progress.lastReviewDate = today;
     progress.todayReviewedWordIds = [];
     
+    const words = getWordsSync();
     const learnedIds = progress.learnedWordIds;
     const masteredSet = new Set(progress.masteredWordIds || []);
     
@@ -168,15 +171,8 @@ export const getReviewWords = (count: number = 10, forceRefresh: boolean = false
   }
   
   // Return words based on stored IDs
+  const words = getWordsSync();
   const targetIds = progress.todayReviewTargetIds || [];
-  // We want to return all target words, but maybe sort them so unreviewed come first?
-  // Or just return them as is, and let the UI handle "next".
-  // The UI iterates through the list.
-  
-  // Let's return them in the stored order.
-  // But wait, if we want to support "shuffle in daily learning group", we might need to shuffle this list in place?
-  // The user said "in daily learning group can shuffle".
-  // If this refers to the review list, we can just shuffle the targetIds when generating.
   
   return words.filter(w => targetIds.includes(w.id)).sort((a, b) => {
     return targetIds.indexOf(a.id) - targetIds.indexOf(b.id);
@@ -267,6 +263,7 @@ export const isMasteredWord = (wordId: number): boolean => {
 
 export const getDifficultWords = (): Word[] => {
   const progress = getProgress();
+  const words = getWordsSync();
   const ids = progress.difficultWordIds || [];
   return words.filter(w => ids.includes(w.id));
 };
@@ -290,6 +287,7 @@ export const getRelearnWords = (options: { shuffle: boolean; skipMastered: boole
 
 export const getLearnedWordsByDate = (date: string): Word[] => {
   const progress = getProgress();
+  const words = getWordsSync();
   const ids = progress.dailyLearningRecords?.[date] || [];
   return words.filter(w => ids.includes(w.id));
 };
@@ -318,4 +316,145 @@ export const getReviewHistory = (days: number = 7): { date: string; count: numbe
 export const getAllTodayLearnedWords = (): Word[] => {
   const today = format(new Date(), 'yyyy-MM-dd');
   return getLearnedWordsByDate(today);
+};
+
+// ========== 所有单词总览相关 ==========
+
+export interface WordGroup {
+  groupIndex: number;        // 组序号 (0-based)
+  wordIds: number[];         // 该组包含的单词ID
+  words: Word[];             // 该组包含的单词对象
+  status: 'completed' | 'today' | 'planned'; // 状态
+  date: string;              // 日期 YYYY-MM-DD (已完成=实际日期, 今日=今天, 计划=预计日期)
+  isExpanded?: boolean;      // 是否展开
+}
+
+/**
+ * 获取所有单词按每组10个分组，并根据学习进度动态分配日期
+ * - 已学完的组：使用实际学习日期
+ * - 今日目标组：标记为今日
+ * - 未来组：从最后学习日+1天开始按每天10个排列
+ */
+export const getAllWordGroups = (): WordGroup[] => {
+  const allWords = getWordsSync();
+  const progress = getProgress();
+  const today = format(new Date(), 'yyyy-MM-dd');
+
+  // 1. 将全部单词按每组10个分组
+  const groups: WordGroup[] = [];
+  const GROUP_SIZE = 10;
+  for (let i = 0; i < allWords.length; i += GROUP_SIZE) {
+    const chunk = allWords.slice(i, i + GROUP_SIZE);
+    groups.push({
+      groupIndex: Math.floor(i / GROUP_SIZE),
+      wordIds: chunk.map(w => w.id),
+      words: chunk,
+      status: 'planned',
+      date: '',
+    });
+  }
+
+  // 2. 根据 dailyLearningRecords 确定已学完的日期映射
+  //    构建 wordId -> 最早学习日期 的映射
+  const wordLearnDate = new Map<number, string>();
+  const records = progress.dailyLearningRecords || {};
+  const sortedDates = Object.keys(records).sort(); // 按日期升序
+
+  for (const dateStr of sortedDates) {
+    const ids = records[dateStr] || [];
+    for (const id of ids) {
+      if (!wordLearnDate.has(id)) {
+        wordLearnDate.set(id, dateStr);
+      }
+    }
+  }
+
+  // 3. 判断每个组的状态
+  const todayTargetSet = new Set(progress.todayTargetIds || []);
+  let lastCompletedDate = ''; // 最后一个已完成组的日期
+
+  for (const group of groups) {
+    // 检查该组有多少个单词已学习
+    const learnedCount = group.wordIds.filter(id => wordLearnDate.has(id)).length;
+    const isTodayGroup = group.wordIds.some(id => todayTargetSet.has(id));
+
+    if (learnedCount >= group.wordIds.length * 0.5 && !isTodayGroup) {
+      // 超过一半的单词已学，视为已完成
+      // 使用该组中最多单词对应的日期
+      const dateCounts = new Map<string, number>();
+      for (const id of group.wordIds) {
+        const d = wordLearnDate.get(id);
+        if (d) {
+          dateCounts.set(d, (dateCounts.get(d) || 0) + 1);
+        }
+      }
+      // 找出出现最多的日期
+      let maxDate = '';
+      let maxCount = 0;
+      for (const [d, c] of dateCounts) {
+        if (c > maxCount) {
+          maxCount = c;
+          maxDate = d;
+        }
+      }
+      group.status = 'completed';
+      group.date = maxDate || today;
+      lastCompletedDate = group.date > lastCompletedDate ? group.date : lastCompletedDate;
+    } else if (isTodayGroup) {
+      group.status = 'today';
+      group.date = today;
+      lastCompletedDate = today > lastCompletedDate ? today : lastCompletedDate;
+    }
+    // 其余保持 'planned'
+  }
+
+  // 4. 为 planned 组分配预计日期
+  //    从最后完成日期（或今天）的下一天开始，每天一组
+  let baseDate = lastCompletedDate || today;
+  // 如果 baseDate 就是今天且有今日组，则下一个 planned 从明天开始
+  let dayOffset = 1;
+
+  for (const group of groups) {
+    if (group.status === 'planned') {
+      const nextDate = addDaysToDate(baseDate, dayOffset);
+      group.date = nextDate;
+      dayOffset++;
+    }
+  }
+
+  return groups;
+};
+
+/**
+ * 辅助函数：给日期加天数
+ */
+function addDaysToDate(dateStr: string, days: number): string {
+  const date = parseISO(dateStr);
+  const result = new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
+  return format(result, 'yyyy-MM-dd');
+}
+
+/**
+ * 获取学习进度概要
+ */
+export const getLearningOverview = () => {
+  const allWords = getWordsSync();
+  const progress = getProgress();
+  const totalWords = allWords.length;
+  const learnedCount = progress.learnedWordIds.length;
+  const remainingWords = totalWords - learnedCount;
+  const remainingDays = Math.ceil(remainingWords / 10);
+  
+  // 预计完成日期
+  const today = new Date();
+  const estimatedEndDate = new Date(today.getTime() + remainingDays * 24 * 60 * 60 * 1000);
+  
+  return {
+    totalWords,
+    learnedCount,
+    remainingWords,
+    remainingDays,
+    estimatedEndDate: format(estimatedEndDate, 'yyyy-MM-dd'),
+    progressPercent: totalWords > 0 ? Math.round((learnedCount / totalWords) * 100) : 0,
+  };
 };

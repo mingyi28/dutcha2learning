@@ -1,55 +1,51 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch, onActivated } from 'vue';
+import { useRouter } from 'vue-router';
 import { Word } from '../types';
 import { 
   getDifficultWords, 
   toggleDifficultWord, 
   isDifficultWord, 
   markWordAsMastered, 
-  getReviewHistory,
   getLearnedWordsByDate,
-  setDailyReviewStatus
+  setDailyReviewStatus,
+  getLearningOverview
 } from '../utils/storage';
 import WordCard from '../components/WordCard.vue';
 import SpellingCard from '../components/SpellingCard.vue';
+import AllWordsOverview from '../components/AllWordsOverview.vue';
 import { 
-  RefreshCw, 
   ArrowRight, 
   BookMarked, 
   CheckCircle, 
-  BookOpen, 
   Shuffle,
   ChevronLeft,
-  Calendar,
-  List,
   Keyboard,
-  Eye
+  Eye,
+  BookOpen,
+  Calendar
 } from 'lucide-vue-next';
-import { format, parseISO } from 'date-fns';
 
-const view = ref<'list' | 'session'>('list');
+const router = useRouter();
+
+// 视图切换：list=复习中心首页, session=复习会话, allwords=所有单词总览
+const view = ref<'list' | 'session' | 'allwords'>('list');
 const mode = ref<'daily' | 'difficult'>('daily');
 const sessionStage = ref<'reading' | 'spelling'>('reading');
 const selectedDate = ref<string>('');
-const historyList = ref<{ date: string; count: number; reviewed: boolean }[]>([]);
 
 const words = ref<Word[]>([]);
 const currentIndex = ref(0);
 const isCurrentDifficult = ref(false);
 
-// Load history for list view
-const loadHistory = () => {
-  historyList.value = getReviewHistory(7);
-};
+// 概览数据
+const overviewData = ref(getLearningOverview());
 
 const difficultCount = computed(() => getDifficultWords().length);
 
-const startDailyReview = (date: string) => {
-  selectedDate.value = date;
-  mode.value = 'daily';
-  view.value = 'session';
-  sessionStage.value = 'reading';
-  loadWords();
+// 加载概览数据
+const refreshOverview = () => {
+  overviewData.value = getLearningOverview();
 };
 
 const startDifficultReview = () => {
@@ -59,9 +55,13 @@ const startDifficultReview = () => {
   loadWords();
 };
 
+const openAllWords = () => {
+  view.value = 'allwords';
+};
+
 const backToList = () => {
   view.value = 'list';
-  loadHistory();
+  refreshOverview();
 };
 
 const updateDifficultStatus = () => {
@@ -81,12 +81,12 @@ const loadWords = () => {
 };
 
 onMounted(() => {
-  loadHistory();
+  refreshOverview();
 });
 
 onActivated(() => {
   if (view.value === 'list') {
-    loadHistory();
+    refreshOverview();
   }
 });
 
@@ -100,15 +100,10 @@ const nextWord = () => {
   if (currentIndex.value < words.value.length - 1) {
     currentIndex.value++;
   } else {
-    // 当前阶段完成
     if (sessionStage.value === 'reading') {
-      // 进入拼写阶段
       sessionStage.value = 'spelling';
       currentIndex.value = 0;
-      // 可以选择在这里打乱顺序，增加难度
-      // words.value = [...words.value].sort(() => 0.5 - Math.random());
     } else {
-      // 全部完成
       finishSession();
     }
   }
@@ -135,11 +130,9 @@ const toggleDifficult = () => {
 const markMastered = () => {
   if (currentWord.value) {
     markWordAsMastered(currentWord.value.id);
-    // 如果在生词本模式，移除当前词
     if (mode.value === 'difficult') {
       words.value.splice(currentIndex.value, 1);
       if (currentIndex.value >= words.value.length) {
-        // 如果是最后一个，且删除了，那么结束或者显示空
         if (words.value.length === 0) {
            backToList();
            return;
@@ -160,22 +153,36 @@ const shuffleWords = () => {
 };
 
 const formatDate = (dateStr: string) => {
-  return format(parseISO(dateStr), 'MM月dd日');
+  // 简单格式化：提取月日
+  try {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      return `${parseInt(parts[1])}月${parseInt(parts[2])}日`;
+    }
+    return dateStr;
+  } catch {
+    return dateStr;
+  }
+};
+
+// 跳转到今日学习页
+const goToLearn = () => {
+  router.push('/learn');
 };
 </script>
 
 <template>
   <div class="flex flex-col h-full bg-gray-50">
-    <!-- List View -->
-    <div v-if="view === 'list'" class="flex flex-col h-full p-4 space-y-6">
+    <!-- ====== 列表视图（复习中心首页） ====== -->
+    <div v-if="view === 'list'" class="flex flex-col h-full p-4 space-y-5">
       <div class="flex justify-between items-center">
         <h2 class="text-xl font-bold text-gray-800">复习中心</h2>
       </div>
 
-      <!-- Difficult Words Card -->
+      <!-- 生词本入口 -->
       <div 
         @click="startDifficultReview"
-        class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex justify-between items-center cursor-pointer hover:shadow-md transition-all active:scale-95"
+        class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex justify-between items-center cursor-pointer hover:shadow-md transition-all active:scale-[0.98]"
       >
         <div class="flex items-center gap-4">
           <div class="bg-orange-100 p-3 rounded-full text-orange-600">
@@ -189,51 +196,61 @@ const formatDate = (dateStr: string) => {
         <ArrowRight class="w-5 h-5 text-gray-300" />
       </div>
 
-      <!-- History List -->
-      <div class="flex-1 overflow-hidden flex flex-col">
-        <h3 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
-          <Calendar class="w-4 h-4" />
-          近一周学习记录
-        </h3>
-        
-        <div class="flex-1 overflow-y-auto space-y-3">
-          <div 
-            v-for="item in historyList" 
-            :key="item.date"
-            @click="startDailyReview(item.date)"
-            class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex justify-between items-center cursor-pointer hover:border-blue-200 transition-all active:scale-95"
-          >
-            <div class="flex items-center gap-4">
-              <div 
-                class="w-2 h-12 rounded-full"
-                :class="item.reviewed ? 'bg-green-500' : 'bg-blue-500'"
-              ></div>
-              <div>
-                <h4 class="font-bold text-gray-800">{{ formatDate(item.date) }}</h4>
-                <p class="text-xs text-gray-500">{{ item.count }} 个单词</p>
-              </div>
+      <!-- 所有单词入口 -->
+      <div 
+        @click="openAllWords"
+        class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-all active:scale-[0.98] overflow-hidden"
+      >
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-4">
+            <div class="bg-blue-100 p-3 rounded-full text-blue-600">
+              <BookOpen class="w-6 h-6" />
             </div>
-            
-            <div class="flex items-center gap-2">
-              <span 
-                class="text-xs px-2 py-1 rounded-full font-medium"
-                :class="item.reviewed ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
-              >
-                {{ item.reviewed ? '已完成' : '未复习' }}
-              </span>
-              <ArrowRight class="w-4 h-4 text-gray-300" />
+            <div>
+              <h3 class="font-bold text-gray-800">所有单词</h3>
+              <p class="text-sm text-gray-500">
+                已学 {{ overviewData.learnedCount }} / {{ overviewData.totalWords }} 词
+              </p>
             </div>
           </div>
-
-          <div v-if="historyList.length === 0" class="text-center py-8 text-gray-400">
-            <p>暂无学习记录</p>
-          </div>
+          <ArrowRight class="w-5 h-5 text-gray-300" />
         </div>
+        
+        <!-- 迷你进度条 -->
+        <div class="mt-4 flex items-center gap-3">
+          <div class="flex-1 bg-gray-100 rounded-full h-2">
+            <div 
+              class="bg-blue-500 h-2 rounded-full transition-all duration-500" 
+              :style="{ width: `${overviewData.progressPercent}%` }"
+            ></div>
+          </div>
+          <span class="text-xs text-gray-400 whitespace-nowrap">
+            {{ overviewData.progressPercent }}%
+          </span>
+        </div>
+        
+        <p class="text-xs text-gray-400 mt-2 flex items-center gap-1">
+          <Calendar class="w-3 h-3" />
+          预计还需 {{ overviewData.remainingDays }} 天学完
+        </p>
+      </div>
+
+      <!-- 学习小贴士 -->
+      <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-100">
+        <p class="text-sm text-indigo-700 font-medium mb-1">💡 学习小贴士</p>
+        <p class="text-xs text-indigo-500">每天坚持学习10个新单词，配合复习巩固，效果更佳。</p>
       </div>
     </div>
 
-    <!-- Session View -->
-    <div v-else class="flex flex-col h-full">
+    <!-- ====== 所有单词总览视图 ====== -->
+    <AllWordsOverview 
+      v-if="view === 'allwords'" 
+      @back="backToList"
+      @go-to-learn="goToLearn"
+    />
+
+    <!-- ====== 复习会话视图 ====== -->
+    <div v-if="view === 'session'" class="flex flex-col h-full">
       <!-- Header -->
       <div class="flex justify-between items-center p-4 border-b border-gray-100 bg-white">
         <button @click="backToList" class="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100">
@@ -241,7 +258,7 @@ const formatDate = (dateStr: string) => {
         </button>
         <div class="flex flex-col items-center">
           <span class="font-bold text-gray-800">
-            {{ mode === 'difficult' ? '生词本复习' : `${formatDate(selectedDate)} 复习` }}
+            {{ mode === 'difficult' ? '生词本复习' : `复习` }}
           </span>
           <span class="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full mt-1">
             {{ sessionStage === 'reading' ? '认读模式' : '拼写模式' }} {{ currentIndex + 1 }}/{{ words.length }}
@@ -327,6 +344,7 @@ const formatDate = (dateStr: string) => {
           <BookMarked class="w-8 h-8 text-gray-400" />
         </div>
         <p class="text-lg font-medium text-gray-700">生词本为空</p>
+        <p class="text-sm text-gray-400 mt-1">在学习过程中将不熟悉的单词加入生词本</p>
         <button @click="backToList" class="mt-4 text-blue-600 font-medium hover:underline">
           返回列表
         </button>

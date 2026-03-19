@@ -2,7 +2,7 @@
 import { ref, onMounted, nextTick, onActivated } from 'vue';
 import { getProgress } from '../utils/storage';
 import { format, eachDayOfInterval, startOfMonth, endOfMonth, getDay, addMonths, isToday } from 'date-fns';
-import { words } from '../data/words';
+import { getWordsSync } from '../data/words';
 import { Word } from '../types';
 import { X } from 'lucide-vue-next';
 
@@ -59,6 +59,7 @@ const handleDateClick = (date: Date) => {
   const dateStr = format(date, 'yyyy-MM-dd');
   const wordIds = progress.value.dailyLearningRecords?.[dateStr] || [];
   
+  const words = getWordsSync();
   dailyWords.value = words.filter(w => wordIds.includes(w.id));
   showDetailModal.value = true;
 };

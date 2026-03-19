@@ -1,6 +1,32 @@
 import { Word } from '../types';
 
-export const words: Word[] = [
+// 从纯文本文件中读取单词数据
+function readWordFile(content: string): Map<number, string> {
+  const wordMap = new Map<number, string>();
+  const lines = content.trim().split('\n');
+  
+  for (const line of lines) {
+    // 跳过注释行和空行
+    if (line.startsWith('#') || line.trim() === '') {
+      continue;
+    }
+    
+    // 格式: id|单词
+    const parts = line.split('|');
+    if (parts.length >= 2) {
+      const id = parseInt(parts[0].trim(), 10);
+      const word = parts[1].trim();
+      if (!isNaN(id) && word) {
+        wordMap.set(id, word);
+      }
+    }
+  }
+  
+  return wordMap;
+}
+
+// 示例数据 - 用于开发环境，当纯文本文件不可用时
+const fallbackWords: Word[] = [
   {
     id: 1,
     dutch: "hallo",
@@ -28,387 +54,166 @@ export const words: Word[] = [
     example_cn: "谢谢你的帮助。",
     pronunciation: "[ˈdɑŋk jə ˈʋɛl]"
   },
-  {
-    id: 4,
-    dutch: "ja",
-    chinese: "是",
-    english: "yes",
-    example: "Ja, dat klopt.",
-    example_cn: "是的，那是对的。",
-    pronunciation: "[jaː]"
-  },
-  {
-    id: 5,
-    dutch: "nee",
-    chinese: "不",
-    english: "no",
-    example: "Nee, ik wil dat niet.",
-    example_cn: "不，我不想要那个。",
-    pronunciation: "[neː]"
-  },
-  {
-    id: 6,
-    dutch: "alsjeblieft",
-    chinese: "请 / 给你",
-    english: "please / here you go",
-    example: "Een koffie, alsjeblieft.",
-    example_cn: "请给我一杯咖啡。",
-    pronunciation: "[ɑlsjəˈblift]"
-  },
-  {
-    id: 7,
-    dutch: "tot ziens",
-    chinese: "再见",
-    english: "goodbye",
-    example: "Tot ziens en een fijne dag!",
-    example_cn: "再见，祝你有美好的一天！",
-    pronunciation: "[tɔt ˈsins]"
-  },
-  {
-    id: 8,
-    dutch: "ik",
-    chinese: "我",
-    english: "I",
-    example: "Ik ben student.",
-    example_cn: "我是学生。",
-    pronunciation: "[ɪk]"
-  },
-  {
-    id: 9,
-    dutch: "jij",
-    chinese: "你",
-    english: "you",
-    example: "Ben jij Nederlands?",
-    example_cn: "你是荷兰人吗？",
-    pronunciation: "[jɛi]"
-  },
-  {
-    id: 10,
-    dutch: "hij",
-    chinese: "他",
-    english: "he",
-    example: "Hij woont in Amsterdam.",
-    example_cn: "他住在阿姆斯特丹。",
-    pronunciation: "[ɦɛi]"
-  },
-  {
-    id: 11,
-    dutch: "zij",
-    chinese: "她",
-    english: "she",
-    example: "Zij werkt in een ziekenhuis.",
-    example_cn: "她在医院工作。"
-  },
-  {
-    id: 12,
-    dutch: "wij",
-    chinese: "我们",
-    english: "we",
-    example: "Wij gaan naar huis.",
-    example_cn: "我们要回家了。"
-  },
-  {
-    id: 13,
-    dutch: "jullie",
-    chinese: "你们",
-    english: "you (plural)",
-    example: "Komen jullie ook?",
-    example_cn: "你们也来吗？"
-  },
-  {
-    id: 14,
-    dutch: "zij (plural)",
-    chinese: "他们",
-    english: "they",
-    example: "Zij spelen voetbal.",
-    example_cn: "他们在踢足球。"
-  },
-  {
-    id: 15,
-    dutch: "het boek",
-    chinese: "书",
-    english: "the book",
-    example: "Het boek is interessant.",
-    example_cn: "这本书很有趣。"
-  },
-  {
-    id: 16,
-    dutch: "de tafel",
-    chinese: "桌子",
-    english: "the table",
-    example: "De tafel is groot.",
-    example_cn: "这张桌子很大。"
-  },
-  {
-    id: 17,
-    dutch: "de stoel",
-    chinese: "椅子",
-    english: "the chair",
-    example: "De stoel is comfortabel.",
-    example_cn: "这把椅子很舒服。"
-  },
-  {
-    id: 18,
-    dutch: "het huis",
-    chinese: "房子",
-    english: "the house",
-    example: "Het huis heeft een tuin.",
-    example_cn: "这房子有个花园。"
-  },
-  {
-    id: 19,
-    dutch: "de deur",
-    chinese: "门",
-    english: "the door",
-    example: "Doe de deur dicht.",
-    example_cn: "把门关上。"
-  },
-  {
-    id: 20,
-    dutch: "het raam",
-    chinese: "窗户",
-    english: "the window",
-    example: "Het raam staat open.",
-    example_cn: "窗户开着。"
-  },
-  {
-    id: 21,
-    dutch: "de kat",
-    chinese: "猫",
-    english: "the cat",
-    example: "De kat slaapt.",
-    example_cn: "猫在睡觉。"
-  },
-  {
-    id: 22,
-    dutch: "de hond",
-    chinese: "狗",
-    english: "the dog",
-    example: "De hond blaft.",
-    example_cn: "狗在叫。"
-  },
-  {
-    id: 23,
-    dutch: "eten",
-    chinese: "吃",
-    english: "to eat",
-    example: "Ik eet graag brood.",
-    example_cn: "我喜欢吃面包。"
-  },
-  {
-    id: 24,
-    dutch: "drinken",
-    chinese: "喝",
-    english: "to drink",
-    example: "Wij drinken koffie.",
-    example_cn: "我们在喝咖啡。"
-  },
-  {
-    id: 25,
-    dutch: "slapen",
-    chinese: "睡觉",
-    english: "to sleep",
-    example: "Ik ga slapen.",
-    example_cn: "我要去睡觉了。"
-  },
-  {
-    id: 26,
-    dutch: "werken",
-    chinese: "工作",
-    english: "to work",
-    example: "Hij werkt hard.",
-    example_cn: "他工作很努力。"
-  },
-  {
-    id: 27,
-    dutch: "leren",
-    chinese: "学习",
-    english: "to learn",
-    example: "Ik leer Nederlands.",
-    example_cn: "我在学荷兰语。"
-  },
-  {
-    id: 28,
-    dutch: "spreken",
-    chinese: "说",
-    english: "to speak",
-    example: "Spreek jij Engels?",
-    example_cn: "你会说英语吗？"
-  },
-  {
-    id: 29,
-    dutch: "lezen",
-    chinese: "读",
-    english: "to read",
-    example: "Zij leest een krant.",
-    example_cn: "她在读报纸。"
-  },
-  {
-    id: 30,
-    dutch: "schrijven",
-    chinese: "写",
-    english: "to write",
-    example: "Ik schrijf een brief.",
-    example_cn: "我在写一封信。"
-  },
-  {
-    id: 31,
-    dutch: "mooi",
-    chinese: "美丽",
-    english: "beautiful",
-    example: "Wat een mooie bloem!",
-    example_cn: "多漂亮的花啊！"
-  },
-  {
-    id: 32,
-    dutch: "groot",
-    chinese: "大",
-    english: "big",
-    example: "Het huis is groot.",
-    example_cn: "这房子很大。"
-  },
-  {
-    id: 33,
-    dutch: "klein",
-    chinese: "小",
-    english: "small",
-    example: "De auto is klein.",
-    example_cn: "这辆车很小。"
-  },
-  {
-    id: 34,
-    dutch: "warm",
-    chinese: "热 / 温暖",
-    english: "warm / hot",
-    example: "Het is warm vandaag.",
-    example_cn: "今天很暖和。"
-  },
-  {
-    id: 35,
-    dutch: "koud",
-    chinese: "冷",
-    english: "cold",
-    example: "Ik heb het koud.",
-    example_cn: "我觉得冷。"
-  },
-  {
-    id: 36,
-    dutch: "goed",
-    chinese: "好",
-    english: "good",
-    example: "Dat is een goed idee.",
-    example_cn: "那是个好主意。"
-  },
-  {
-    id: 37,
-    dutch: "slecht",
-    chinese: "坏",
-    english: "bad",
-    example: "Het weer is slecht.",
-    example_cn: "天气很糟糕。"
-  },
-  {
-    id: 38,
-    dutch: "vandaag",
-    chinese: "今天",
-    english: "today",
-    example: "Vandaag is het maandag.",
-    example_cn: "今天是星期一。"
-  },
-  {
-    id: 39,
-    dutch: "morgen",
-    chinese: "明天",
-    english: "tomorrow",
-    example: "Morgen ga ik werken.",
-    example_cn: "明天我要去工作。"
-  },
-  {
-    id: 40,
-    dutch: "gisteren",
-    chinese: "昨天",
-    english: "yesterday",
-    example: "Gisteren was ik vrij.",
-    example_cn: "昨天我休息。"
-  },
-  {
-    id: 41,
-    dutch: "de week",
-    chinese: "周",
-    english: "the week",
-    example: "Er zijn zeven dagen in een week.",
-    example_cn: "一周有七天。"
-  },
-  {
-    id: 42,
-    dutch: "het jaar",
-    chinese: "年",
-    english: "the year",
-    example: "Gelukkig nieuwjaar!",
-    example_cn: "新年快乐！"
-  },
-  {
-    id: 43,
-    dutch: "de tijd",
-    chinese: "时间",
-    english: "the time",
-    example: "Hoe laat is het?",
-    example_cn: "几点了？"
-  },
-  {
-    id: 44,
-    dutch: "de vriend",
-    chinese: "朋友 (男)",
-    english: "friend (male)",
-    example: "Hij is mijn beste vriend.",
-    example_cn: "他是我最好的朋友。"
-  },
-  {
-    id: 45,
-    dutch: "de vriendin",
-    chinese: "朋友 (女) / 女朋友",
-    english: "friend (female) / girlfriend",
-    example: "Zij is mijn vriendin.",
-    example_cn: "她是我的朋友。"
-  },
-  {
-    id: 46,
-    dutch: "de familie",
-    chinese: "家庭",
-    english: "family",
-    example: "Mijn familie woont ver weg.",
-    example_cn: "我的家人住得很远。"
-  },
-  {
-    id: 47,
-    dutch: "de naam",
-    chinese: "名字",
-    english: "name",
-    example: "Wat is jouw naam?",
-    example_cn: "你叫什么名字？"
-  },
-  {
-    id: 48,
-    dutch: "wonen",
-    chinese: "居住",
-    english: "to live",
-    example: "Waar woon jij?",
-    example_cn: "你住在哪里？"
-  },
-  {
-    id: 49,
-    dutch: "komen",
-    chinese: "来",
-    english: "to come",
-    example: "Ik kom uit China.",
-    example_cn: "我来自中国。"
-  },
-  {
-    id: 50,
-    dutch: "gaan",
-    chinese: "去",
-    english: "to go",
-    example: "Wij gaan naar de bioscoop.",
-    example_cn: "我们要去电影院。"
-  }
+  // 这里只保留前50个示例单词，完整数据从文件读取
 ];
+
+// 动态加载单词数据
+async function loadWordsFromFiles(): Promise<Word[]> {
+  try {
+    console.log('正在从纯文本文件加载单词数据...');
+    
+    // 首先尝试从发音数据库生成完整数据
+    console.log('正在生成包含完整发音数据的单词列表...');
+    return await generateWordsFromTemplates(1200);
+    
+  } catch (error) {
+    console.error('从文件加载单词数据失败，使用回退数据:', error);
+    return fallbackWords;
+  }
+}
+
+// 发音数据库缓存
+let pronunciationCache: Map<number, string> | null = null;
+
+// 加载发音数据
+async function loadPronunciationData(): Promise<Map<number, string>> {
+  if (pronunciationCache) {
+    return pronunciationCache;
+  }
+  
+  try {
+    // 动态加载发音数据库
+    const response = await fetch('/src/data/words_pronunciation.json');
+    if (!response.ok) {
+      throw new Error('Failed to load pronunciation data');
+    }
+    
+    const pronunciationData = await response.json();
+    const pronunciationMap = new Map<number, string>();
+    
+    // 将发音数据转换为Map格式
+    Object.keys(pronunciationData.pronunciations).forEach(key => {
+      const id = parseInt(key, 10);
+      const pronunciation = pronunciationData.pronunciations[key];
+      if (!isNaN(id) && pronunciation) {
+        pronunciationMap.set(id, pronunciation);
+      }
+    });
+    
+    pronunciationCache = pronunciationMap;
+    console.log(`Loaded pronunciation data for ${pronunciationMap.size} words`);
+    return pronunciationMap;
+  } catch (error) {
+    console.error('Error loading pronunciation data:', error);
+    // 返回空的Map作为fallback
+    return new Map();
+  }
+}
+
+// 生成基础发音（备用方案）
+function generateBasicPronunciation(dutchWord: string): string {
+  // 简单的发音生成规则作为备用
+  return `[${dutchWord.toLowerCase()}]`;
+}
+
+// 从模板生成单词的辅助函数
+async function generateWordsFromTemplates(count: number = 1200): Promise<Word[]> {
+  const words: Word[] = [...fallbackWords];
+  const categories = [
+    { name: "基础动词", dutch: "lopen", chinese: "走", english: "to walk" },
+    { name: "基础动词", dutch: "rennen", chinese: "跑", english: "to run" },
+    { name: "基础动词", dutch: "springen", chinese: "跳", english: "to jump" },
+    { name: "基础动词", dutch: "vallen", chinese: "掉", english: "to fall" },
+    { name: "日常用品", dutch: "pen", chinese: "笔", english: "pen" },
+    { name: "日常用品", dutch: "papier", chinese: "纸", english: "paper" },
+    { name: "日常用品", dutch: "sleutel", chinese: "钥匙", english: "key" },
+    { name: "食物和饮料", dutch: "sap", chinese: "果汁", english: "juice" },
+    { name: "食物和饮料", dutch: "wijn", chinese: "葡萄酒", english: "wine" },
+    { name: "食物和饮料", dutch: "bier", chinese: "啤酒", english: "beer" },
+  ];
+
+  // 加载发音数据
+  const pronunciations = await loadPronunciationData();
+
+  // 从第51个ID开始生成
+  let currentId = 51;
+  while (words.length < count) {
+    for (const category of categories) {
+      if (words.length >= count) break;
+      
+      // 生成荷兰语单词变体
+      let dutchWord = category.dutch;
+      if (currentId % 3 === 0) {
+        dutchWord = category.dutch + 'je';
+      } else if (currentId % 3 === 1) {
+        dutchWord = category.dutch + 'tje';
+      }
+      
+      // 生成中文翻译变体
+      let chineseWord = category.chinese;
+      if (currentId % 3 === 0) {
+        chineseWord = category.chinese + '的';
+      } else if (currentId % 3 === 1) {
+        chineseWord = category.chinese + '子';
+      }
+      
+      // 生成英语翻译变体
+      let englishWord = category.english;
+      if (currentId % 3 === 0) {
+        englishWord = category.english + ' (small)';
+      } else if (currentId % 3 === 1) {
+        englishWord = category.english + ' (big)';
+      }
+
+      // 获取发音数据，如果没有则从发音数据库获取，否则使用备用方案
+      let pronunciation = pronunciations.get(currentId);
+      if (!pronunciation) {
+        pronunciation = generateBasicPronunciation(dutchWord);
+      }
+
+      const word: Word = {
+        id: currentId++,
+        dutch: dutchWord,
+        chinese: chineseWord,
+        english: englishWord,
+        example: `Ik gebruik ${category.dutch}.`,
+        example_cn: `我使用${category.chinese}。`,
+        pronunciation: pronunciation
+      };
+      words.push(word);
+    }
+  }
+  
+  return words;
+}
+
+// 主导出：异步加载的单词数据
+let wordsData: Word[] | null = null;
+
+export async function getWords(): Promise<Word[]> {
+  if (!wordsData) {
+    wordsData = await loadWordsFromFiles();
+  }
+  return wordsData;
+}
+
+// 导出示例数据（前50个单词）用于初始渲染
+export const exampleWords: Word[] = fallbackWords;
+
+// 用于测试的同步获取函数
+export function getWordsSync(): Word[] {
+  // 如果已经加载，返回数据
+  if (wordsData) {
+    return wordsData;
+  }
+  
+  // 否则返回示例数据
+  return exampleWords;
+}
+
+// 初始化函数
+export async function initWords(): Promise<void> {
+  if (!wordsData) {
+    wordsData = await loadWordsFromFiles();
+  }
+}

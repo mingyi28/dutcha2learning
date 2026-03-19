@@ -1,0 +1,1207 @@
+# 英文翻译列表 (English Translations)
+# 格式: id|英文翻译
+# 总单词数: 1200个
+# 文件生成时间: 2026-01-29
+
+1|hello
+2|good morning
+3|thank you
+4|yes
+5|no
+6|please / here you go
+7|goodbye
+8|I
+9|you
+10|he
+11|she
+12|we
+13|you (plural)
+14|they
+15|the book
+16|the table
+17|the chair
+18|the house
+19|the door
+20|the window
+21|the cat
+22|the dog
+23|to eat
+24|to drink
+25|to sleep
+26|to work
+27|to learn
+28|to speak
+29|to read
+30|to write
+31|beautiful
+32|big
+33|small
+34|warm / hot
+35|cold
+36|good
+37|bad
+38|today
+39|tomorrow
+40|yesterday
+41|the week
+42|the year
+43|the time
+44|friend (male)
+45|friend (female) / girlfriend
+46|family
+47|name
+48|to live
+49|to come
+50|to go
+
+# 以下为生成单词翻译 (Generated Words Translations)
+51|to walk
+52|to run
+53|to jump
+54|to fall
+55|to sit
+56|to stand
+57|to lie
+58|to look
+59|to see
+60|to hear
+61|pen
+62|paper
+63|key
+64|wallet
+65|phone
+66|computer
+67|TV
+68|radio
+69|pillow
+70|blanket
+71|juice
+72|soda
+73|wine
+74|beer
+75|tea
+76|coffee
+77|cookie
+78|cake
+79|ice cream
+80|chips
+81|father
+82|mother
+83|brother
+84|sister
+85|grandfather
+86|grandmother
+87|uncle
+88|aunt
+89|nephew
+90|niece
+91|one
+92|two
+93|three
+94|four
+95|five
+96|six
+97|seven
+98|eight
+99|nine
+100|ten
+101|red
+102|blue
+103|green
+104|yellow
+105|black
+106|white
+107|brown
+108|gray
+109|purple
+110|orange
+111|Amsterdam
+112|Rotterdam
+113|The Hague
+114|Utrecht
+115|Eindhoven
+116|Groningen
+117|Maastricht
+118|Nijmegen
+119|Tilburg
+120|Breda
+121|doctor
+122|teacher
+123|engineer
+124|cook
+125|police
+126|firefighter
+127|baker
+128|farmer
+129|musician
+130|artist
+131|horse
+132|cow
+133|sheep
+134|pig
+135|chicken
+136|duck
+137|rabbit
+138|mouse
+139|bird
+140|fish
+141|spring
+142|summer
+143|autumn
+144|winter
+145|sun
+146|rain
+147|snow
+148|wind
+149|cloud
+150|rainbow
+151|Monday
+152|Tuesday
+153|Wednesday
+154|Thursday
+155|Friday
+156|Saturday
+157|Sunday
+158|January
+159|February
+160|March
+161|April
+162|May
+163|June
+164|July
+165|August
+166|September
+167|October
+168|November
+169|December
+170|Spring
+171|Summer
+172|Autumn
+173|Winter
+174|Day and night
+175|Dawn
+176|Dusk
+177|Midnight
+178|Morning
+179|Noon
+180|Afternoon
+181|Evening
+182|Night
+183|Week
+184|Month
+185|Season
+186|Holiday
+187|Workday
+188|Weekend
+189|Hour
+190|Minute
+191|Second
+192|Clock
+193|Calendar
+194|Schedule
+195|Schedule
+196|Plan
+197|Goal
+198|Task
+199|Project
+200|Work
+201|Head
+202|Face
+203|Eyes
+204|Ears
+205|Nose
+206|Mouth
+207|Teeth
+208|Tongue
+209|Hair
+210|Skin
+211|Hand
+212|Finger
+213|Thumb
+214|Arm
+215|Shoulder
+216|Leg
+217|Foot
+218|Toe
+219|Knee
+220|Back
+221|Chest
+222|Stomach
+223|Heart
+224|Lung
+225|Liver
+226|Kidney
+227|Blood
+228|Bone
+229|Muscle
+230|Nerve
+231|Bed
+232|Sofa
+233|Chair
+234|Table
+235|Desk
+236|Bookshelf
+237|Wardrobe
+238|Dresser
+239|Mirror
+240|Lamp
+241|Table lamp
+242|Floor lamp
+243|Ceiling light
+244|Wall light
+245|Chandelier
+246|TV stand
+247|Coffee table
+248|Footstool
+249|Carpet
+250|Curtain
+251|Refrigerator
+252|Oven
+253|Microwave
+254|Stove
+255|Range hood
+256|Dishwasher
+257|Washing machine
+258|Dryer
+259|Vacuum cleaner
+260|Air conditioner
+261|Shirt
+262|T-shirt
+263|Sweater
+264|Jacket
+265|Coat
+266|Pants
+267|Jeans
+268|Shorts
+269|Skirt
+270|Dress
+271|Shoes
+272|Sneakers
+273|Boots
+274|Sandals
+275|Slippers
+276|Socks
+277|Underwear
+278|Bra
+279|Belt
+280|Hat
+281|Scarf
+282|Gloves
+283|Sunglasses
+284|Umbrella
+285|Bag
+286|Wallet
+287|Backpack
+288|Handbag
+289|Suitcase
+290|Backpack
+291|Car
+292|Bus
+293|Train
+294|Subway
+295|Tram
+296|Bicycle
+297|Motorcycle
+298|Airplane
+299|Boat
+300|Taxi
+301|Primary school
+302|Middle school
+303|High school
+304|University
+305|College
+306|School
+307|Classroom
+308|Library
+309|Laboratory
+310|Playground
+311|Gymnasium
+312|Cafeteria
+313|Office
+314|Principal's office
+315|Teacher's office
+316|Toilet
+317|Corridor
+318|Stairs
+319|Elevator
+320|Parking lot
+321|Bookstore
+322|Supermarket
+323|Convenience store
+324|Pharmacy
+325|Bakery
+326|Butcher shop
+327|Vegetable shop
+328|Fruit shop
+329|Fish shop
+330|Flower shop
+331|Clothing store
+332|Shoe store
+333|Jewelry store
+334|Electronics store
+335|Furniture store
+336|Hardware store
+337|Gas station
+338|Post office
+339|Bank
+340|Hospital
+341|Happy
+342|Sad
+343|Angry
+344|Afraid
+345|Surprised
+346|Disgusted
+347|Love
+348|Hate
+349|Hope
+350|Disappointment
+351|Excited
+352|Bored
+353|Nervous
+354|Relaxed
+355|Confident
+356|Shy
+357|Proud
+358|Modest
+359|Jealous
+360|Grateful
+361|Football
+362|Basketball
+363|Volleyball
+364|Tennis
+365|Badminton
+366|Table tennis
+367|Golf
+368|Baseball
+369|Rugby
+370|Cricket
+371|Swimming
+372|Running
+373|Jumping
+374|Throwing
+375|Catching
+376|Kicking
+377|Hitting
+378|Defending
+379|Attacking
+380|Scoring
+381|Park
+382|Garden
+383|Forest
+384|Mountains
+385|River
+386|Lake
+387|Ocean
+388|Beach
+389|Island
+390|Desert
+391|Village
+392|Town
+393|City
+394|Capital
+395|Country
+396|Continent
+397|Earth
+398|Moon
+399|Stars
+400|Galaxy
+401|Apple
+402|Banana
+403|Orange
+404|Strawberry
+405|Grape
+406|Watermelon
+407|Pineapple
+408|Mango
+409|Peach
+410|Pear
+411|Carrot
+412|Potato
+413|Onion
+414|Tomato
+415|Cucumber
+416|Chili pepper
+417|Spinach
+418|Lettuce
+419|Cabbage
+420|Broccoli
+421|Breakfast
+422|Lunch
+423|Dinner
+424|Snack
+425|Food
+426|Drink
+427|Menu
+428|Recipe
+429|Cooking
+430|Baking
+431|Painting
+432|Sculpture
+433|Photography
+434|Film
+435|Drama
+436|Poetry
+437|Literature
+438|Poet
+439|Writer
+440|Artist
+441|Sports
+442|Game
+443|Hobby
+444|Travel
+445|Tourism
+446|Holiday
+447|Camping
+448|Picnic
+449|Barbecue
+450|Party
+451|Birthday party
+452|Wedding
+453|Reception
+454|Carnival
+455|Christmas
+456|Easter
+457|St. Nicholas Day
+458|King's Day
+459|Free market
+460|Amusement park
+461|Amusement ride
+462|Roller coaster
+463|Ferris wheel
+464|Haunted house
+465|Zoo
+466|Aquarium
+467|Planetarium
+468|Museum
+469|Gallery
+470|Exhibition
+471|Technology
+472|Internet
+473|Website
+474|App
+475|Software
+476|Hardware
+477|Program
+478|Operating system
+479|Database
+480|Server
+481|Network
+482|Wi-Fi
+483|Bluetooth
+484|USB
+485|Cloud
+486|Artificial intelligence
+487|Robot
+488|Drone
+489|Virtual reality
+490|Augmented reality
+491|Bitcoin
+492|Blockchain
+493|Cryptocurrency
+494|E-commerce
+495|Online shopping
+496|Social media
+497|Facebook
+498|Instagram
+499|Twitter
+500|YouTube
+501|Netherlands
+502|Dutch language
+503|Dutch
+504|Flemish
+505|Belgium
+506|Royal family
+507|King
+508|Queen
+509|Prince
+510|Princess
+511|Flag
+512|National anthem
+513|Tulips
+514|Clogs
+515|Cheese
+516|Gouda cheese
+517|Edam cheese
+518|Caramel waffle
+519|Mini pancakes
+520|Oil balls
+521|Chocolate sprinkles
+522|Spice cookies
+523|Pepper nuts
+524|Bitter meatballs
+525|Croquette
+526|French fries
+527|French fries
+528|Mayonnaise
+529|Peanut sauce
+530|Herring
+531|Dairy products
+532|Milk
+533|Butter
+534|Yogurt
+535|Quark cheese
+536|Mini pancake pan
+537|Pancake
+538|Pea soup
+539|Carrot potato mash
+540|Potato mash
+541|Search
+542|Find
+543|Lose
+544|Win
+545|Give
+546|Take
+547|Bring
+548|Fetch
+549|Open
+550|Close
+551|Start
+552|Stop
+553|Change
+554|Stay
+555|Leave
+556|Arrive
+557|Wait
+558|Expect
+559|Surprise
+560|Disappoint
+561|Help
+562|Disturb
+563|Encourage
+564|Discourage
+565|Admire
+566|Criticize
+567|Compliment
+568|Criticize
+569|Praise
+570|Disapprove
+571|Fast
+572|Slow
+573|Soft
+574|Hard
+575|Heavy
+576|Light
+577|Thin
+578|Thick
+579|Short
+580|Long
+581|Wide
+582|Narrow
+583|High
+584|Low
+585|Deep
+586|Shallow
+587|Empty
+588|Full
+589|New
+590|Old
+591|Young
+592|Old
+593|Hot
+594|Cold
+595|Wet
+596|Dry
+597|Dirty
+598|Clean
+599|Bright
+600|Dark
+601|Time
+602|Day
+603|Week
+604|Month
+605|Year
+606|Century
+607|Era
+608|History
+609|Future
+610|Present
+611|Past
+612|Minute
+613|Hour
+614|Day
+615|Week
+616|Month
+617|Year
+618|Second
+619|Millisecond
+620|Microsecond
+621|Home
+622|House
+623|Apartment
+624|Room
+625|Kitchen
+626|Living room
+627|Bedroom
+628|Bathroom
+629|Toilet
+630|Balcony
+631|Garden
+632|Garage
+633|Basement
+634|Attic
+635|Roof
+636|Wall
+637|Floor
+638|Ceiling
+639|Door
+640|Window
+641|Nature
+642|Environment
+643|Ecology
+644|Pollution
+645|Protection
+646|Resource
+647|Energy
+648|Water
+649|Air
+650|Land
+651|Plant
+652|Flower
+653|Tree
+654|Grass
+655|Leaf
+656|Root
+657|Seed
+658|Fruit
+659|Vegetable
+660|Fruit
+661|Meat
+662|Fish
+663|Egg
+664|Milk
+665|Rice
+666|Flour
+667|Bread
+668|Sugar
+669|Salt
+670|Oil
+671|Sauce
+672|Soup
+673|Salad
+674|Sandwich
+675|Hamburger
+676|Pizza
+677|Pasta
+678|Rice
+679|Noodles
+680|Dumplings
+681|Spring rolls
+682|Sushi
+683|Curry
+684|Roast chicken
+685|Steak
+686|Fish fillet
+687|Sausage
+688|Ham
+689|Bacon
+690|Cheese
+691|Butter
+692|Jam
+693|Honey
+694|Chocolate
+695|Candy
+696|Cake
+697|Cookie
+698|Ice cream
+699|Pudding
+700|Pie
+701|Tea
+702|Coffee
+703|Juice
+704|Soda
+705|Water
+706|Milk
+707|Wine
+708|Beer
+709|Whiskey
+710|Vodka
+711|Tequila
+712|Rum
+713|Gin
+714|Brandy
+715|Champagne
+716|Wine
+717|Red wine
+718|White wine
+719|Rosé wine
+720|Sparkling wine
+721|Music
+722|Song
+723|Melody
+724|Rhythm
+725|Lyrics
+726|Singer
+727|Band
+728|Musical instrument
+729|Piano
+730|Guitar
+731|Violin
+732|Drum
+733|Flute
+734|Trumpet
+735|Saxophone
+736|Harp
+737|Harmonica
+738|Accordion
+739|Organ
+740|Electronic keyboard
+741|Painting
+742|Sculpture
+743|Photography
+744|Film
+745|Drama
+746|Poetry
+747|Literature
+748|Poet
+749|Writer
+750|Artist
+751|Sports
+752|Game
+753|Hobby
+754|Travel
+755|Tourism
+756|Holiday
+757|Camping
+758|Picnic
+759|Barbecue
+760|Party
+761|Birthday party
+762|Wedding
+763|Reception
+764|Carnival
+765|Christmas
+766|Easter
+767|St. Nicholas Day
+768|King's Day
+769|Free market
+770|Amusement park
+771|Amusement ride
+772|Roller coaster
+773|Ferris wheel
+774|Haunted house
+775|Zoo
+776|Aquarium
+777|Planetarium
+778|Museum
+779|Gallery
+780|Exhibition
+781|Technology
+782|Internet
+783|Website
+784|App
+785|Software
+786|Hardware
+787|Program
+788|Operating system
+789|Database
+790|Server
+791|Network
+792|Wi-Fi
+793|Bluetooth
+794|USB
+795|Cloud
+796|Artificial intelligence
+797|Robot
+798|Drone
+799|Virtual reality
+800|Augmented reality
+801|Bitcoin
+802|Blockchain
+803|Cryptocurrency
+804|E-commerce
+805|Online shopping
+806|Social media
+807|Facebook
+808|Instagram
+809|Twitter
+810|YouTube
+811|Netherlands
+812|Dutch language
+813|Dutch
+814|Flemish
+815|Belgium
+816|Royal family
+817|King
+818|Queen
+819|Prince
+820|Princess
+821|Flag
+822|National anthem
+823|Tulips
+824|Clogs
+825|Cheese
+826|Gouda cheese
+827|Edam cheese
+828|Caramel waffle
+829|Mini pancakes
+830|Oil balls
+831|Chocolate sprinkles
+832|Spice cookies
+833|Pepper nuts
+834|Bitter meatballs
+835|Croquette
+836|French fries
+837|French fries
+838|Mayonnaise
+839|Peanut sauce
+840|Herring
+841|Dairy products
+842|Milk
+843|Butter
+844|Yogurt
+845|Quark cheese
+846|Mini pancake pan
+847|Pancake
+848|Pea soup
+849|Carrot potato mash
+850|Potato mash
+851|Search
+852|Find
+853|Lose
+854|Win
+855|Give
+856|Take
+857|Bring
+858|Fetch
+859|Open
+860|Close
+861|Start
+862|Stop
+863|Change
+864|Stay
+865|Leave
+866|Arrive
+867|Wait
+868|Expect
+869|Surprise
+870|Disappoint
+871|Help
+872|Disturb
+873|Encourage
+874|Discourage
+875|Admire
+876|Criticize
+877|Compliment
+878|Criticize
+879|Praise
+880|Disapprove
+881|Fast
+882|Slow
+883|Soft
+884|Hard
+885|Heavy
+886|Light
+887|Thin
+888|Thick
+889|Short
+890|Long
+891|Wide
+892|Narrow
+893|High
+894|Low
+895|Deep
+896|Shallow
+897|Empty
+898|Full
+899|New
+900|Old
+901|Fresh
+902|Musty
+903|Fresh
+904|Old
+905|New
+906|Modern
+907|Traditional
+908|Elegant
+909|Sloppy
+910|Neat
+911|Freedom
+912|Equality
+913|Justice
+914|Democracy
+915|Dictatorship
+916|Freedom of speech
+917|Human rights
+918|Civil rights
+919|Law
+920|Judge
+921|Lawyer
+922|Judicial
+923|Punishment
+924|Prison
+925|Police officer
+926|Detective
+927|Crime
+928|Theft
+929|Burglary
+930|Robbery
+931|Murder
+932|Violence
+933|Peace
+934|War
+935|Conflict
+936|Negotiation
+937|Treaty
+938|Alliance
+939|Friendship
+940|Love
+941|Weather report
+942|Weather forecast
+943|Sunshine
+944|Cloudy
+945|Thunderstorm
+946|Lightning
+947|Thunder
+948|Fog
+949|Freezing rain
+950|Hail
+951|Tornado
+952|Hurricane
+953|Earthquake
+954|Volcano
+955|Tsunami
+956|Flood
+957|Drought
+958|Fire
+959|Explosion
+960|Accident
+961|Emergency
+962|Rescue
+963|Emergency service
+964|Emergency number
+965|112
+966|Ambulance personnel
+967|Firefighter
+968|Police officer
+969|Rescue worker
+970|First aid
+971|Canal
+972|Canal ring
+973|Mill
+974|Windmill
+975|Water mill
+976|Polder
+977|Dike
+978|Lock
+979|Harbor
+980|Shipping
+981|Fishing
+982|Agriculture
+983|Livestock farming
+984|Field
+985|Meadow
+986|Stables
+987|Barn
+988|Hay
+989|Haystack
+990|Goats
+991|Sheep
+992|Pigs
+993|Chickens
+994|Ducks
+995|Geese
+996|Bees
+997|Honey
+998|Cheese factory
+999|Cheese market
+1000|Cheese merchant
+1001|Economy
+1002|Finance
+1003|Bank
+1004|Insurance
+1005|Investment
+1006|Share
+1007|Bond
+1008|Interest
+1009|Inflation
+1010|Definition
+1011|Mathematics
+1012|Number
+1013|Equation
+1014|Formula
+1015|Geometry
+1016|Algebra
+1017|Statistics
+1018|Chance
+1019|Probability
+1020|Science
+1021|Physics
+1022|Chemistry
+1023|Biology
+1024|Astronomy
+1025|Geology
+1026|History
+1027|Geography
+1028|Social studies
+1029|Philosophy
+1030|Psychology
+1031|Architecture
+1032|Construction
+1033|Structure
+1034|Foundation
+1035|Wall
+1036|Ceiling
+1037|Floor
+1038|Roof
+1039|Window
+1040|Window frame
+1041|Glass
+1042|Stone
+1043|Brick
+1044|Concrete
+1045|Cement
+1046|Sand
+1047|Gravel
+1048|Wood
+1049|Metal
+1050|Steel
+1051|Good night
+1052|Good morning
+1053|Good afternoon
+1054|Good evening
+1055|Please
+1056|Thank you
+1057|You're welcome
+1058|Excuse me
+1059|Pardon
+1060|Sorry
+1061|No problem
+1062|How are you
+1063|Excellent
+1064|Good
+1065|Bad
+1066|So-so
+1067|Where
+1068|When
+1069|Who
+1070|What
+1071|Why
+1072|How
+1073|Which
+1074|How many
+1075|How much does it cost
+1076|Living room
+1077|Bedroom
+1078|Kitchen
+1079|Dining room
+1080|Bathroom
+1081|Toilet
+1082|Corridor
+1083|Stairs
+1084|Basement
+1085|Attic
+1086|Balcony
+1087|Terrace
+1088|Garden
+1089|Garage
+1090|Barn
+1091|Storage room
+1092|Laundry room
+1093|Boiler room
+1094|Meter cabinet
+1095|Front door
+1096|Back door
+107|Side door
+1098|Window
+1099|Window frame
+1100|Roller shutter
+1101|Teapot
+1102|Coffee machine
+1103|Kettle
+1104|Blender
+1105|Mixer
+1106|Kitchen machine
+1107|Toaster
+1108|Waffle iron
+1109|Grill
+1110|Deep fryer
+1111|Steam oven
+1112|Slow cooker
+1113|Kitchen scale
+1114|Measuring cup
+1115|Sieve
+1116|Colander
+1117|Cutting board
+1118|Meat mallet
+1119|Cheese slicer
+1120|Apple peeler
+1121|Cleaning agent
+1122|All-purpose cleaner
+1123|Glass cleaner
+1124|Bathroom cleaner
+1125|Toilet cleaner
+1126|Unclogger
+1127|Sponge
+1128|Cloth
+1129|Microfiber cloth
+1130|Mop
+1131|Bucket
+1132|Scrub brush
+1133|Dust cloth
+1134|Air freshener
+1135|Disinfectant
+1136|Bleach
+1137|Laundry detergent
+1138|Fabric softener
+1139|Ironing aid
+1140|Iron
+1141|Fax machine
+1142|Scanner
+1143|Binder
+1144|Stapler
+1145|Punch
+1146|Paper clip
+1147|Staples
+1148|Post-it note
+1149|Mailbox
+1150|Filing cabinet
+1151|Office chair
+1152|Desk
+1153|Table lamp
+1154|Telephone handset
+1155|Headset
+1156|Webcam
+1157|Microphone
+1158|Speaker
+1159|USB stick
+1160|External hard drive
+1161|Lion
+1162|Tiger
+1163|Bear
+1164|Wolf
+1165|Fox
+1166|Badger
+1167|Hedgehog
+1168|Squirrel
+1169|Deer
+1170|Roe deer
+1171|Wild boar
+1172|Badger
+1173|Marten
+1174|Weasel
+1175|Otter
+1176|Beavers
+1177|Sparrow
+1178|Blackbird
+1179|Robin
+1180|Woodpecker
+1181|Owl
+1182|Hawk
+1183|Falcon
+1184|Eagle
+1185|Vulture
+1186|Parrot
+1187|Canary
+1188|Pigeon
+1189|Seagull
+1190|Swan
+1191|Together
+1192|Alone
+1193|Soon
+1194|Slowly
+1195|Carefully
+1196|Softly
+1197|Loudly
+1198|Quietly
+1199|Quickly
+1200|Slowly
