@@ -1,1 +1,12 @@
+# Dependencies
 /node_modules
+
+# Build output
+/dist
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Vite config compiled output
+vite.config.d.ts
+vite.config.js

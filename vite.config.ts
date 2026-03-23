@@ -11,6 +11,9 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: [".preview.with.woa.com"]
+    allowedHosts: [".preview.with.woa.com"],
+    headers: {
+      'Cache-Control': 'no-store',
+    },
   }
 })

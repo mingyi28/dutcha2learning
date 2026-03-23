@@ -9,7 +9,10 @@ import {
   markWordAsMastered, 
   getLearnedWordsByDate,
   setDailyReviewStatus,
-  getLearningOverview
+  getLearningOverview,
+  getReviewWords,
+  getProgress,
+  markWordAsReviewed
 } from '../utils/storage';
 import WordCard from '../components/WordCard.vue';
 import SpellingCard from '../components/SpellingCard.vue';
@@ -23,14 +26,15 @@ import {
   Keyboard,
   Eye,
   BookOpen,
-  Calendar
+  Calendar,
+  RotateCcw
 } from 'lucide-vue-next';
 
 const router = useRouter();
 
 // 视图切换：list=复习中心首页, session=复习会话, allwords=所有单词总览
 const view = ref<'list' | 'session' | 'allwords'>('list');
-const mode = ref<'daily' | 'difficult'>('daily');
+const mode = ref<'daily' | 'difficult' | 'todayReview'>('daily');
 const sessionStage = ref<'reading' | 'spelling'>('reading');
 const selectedDate = ref<string>('');
 
@@ -41,6 +45,11 @@ const isCurrentDifficult = ref(false);
 // 概览数据
 const overviewData = ref(getLearningOverview());
 
+// 今日复习数据
+const todayReviewWords = ref<Word[]>([]);
+const todayReviewCount = ref(0);
+const todayReviewedCount = ref(0);
+
 const difficultCount = computed(() => getDifficultWords().length);
 
 // 加载概览数据
@@ -48,11 +57,32 @@ const refreshOverview = () => {
   overviewData.value = getLearningOverview();
 };
 
+// 加载今日复习数据
+const refreshTodayReview = () => {
+  const reviewWords = getReviewWords(10);
+  todayReviewWords.value = reviewWords;
+  todayReviewCount.value = reviewWords.length;
+  const prog = getProgress();
+  todayReviewedCount.value = prog.todayReviewedWordIds?.length || 0;
+};
+
 const startDifficultReview = () => {
   mode.value = 'difficult';
   view.value = 'session';
   sessionStage.value = 'reading';
   loadWords();
+};
+
+// 开始今日复习
+const startTodayReview = () => {
+  const reviewWords = getReviewWords(10);
+  if (reviewWords.length === 0) return;
+  mode.value = 'todayReview';
+  view.value = 'session';
+  sessionStage.value = 'reading';
+  words.value = reviewWords;
+  currentIndex.value = 0;
+  updateDifficultStatus();
 };
 
 const openAllWords = () => {
@@ -73,6 +103,8 @@ const updateDifficultStatus = () => {
 const loadWords = () => {
   if (mode.value === 'daily') {
     words.value = getLearnedWordsByDate(selectedDate.value);
+  } else if (mode.value === 'todayReview') {
+    words.value = getReviewWords(10);
   } else {
     words.value = getDifficultWords();
   }
@@ -82,11 +114,13 @@ const loadWords = () => {
 
 onMounted(() => {
   refreshOverview();
+  refreshTodayReview();
 });
 
 onActivated(() => {
   if (view.value === 'list') {
     refreshOverview();
+    refreshTodayReview();
   }
 });
 
@@ -97,6 +131,11 @@ watch(currentIndex, () => {
 });
 
 const nextWord = () => {
+  // 今日复习模式下，标记当前单词为已复习
+  if (mode.value === 'todayReview' && currentWord.value) {
+    markWordAsReviewed(currentWord.value.id);
+  }
+
   if (currentIndex.value < words.value.length - 1) {
     currentIndex.value++;
   } else {
@@ -117,6 +156,7 @@ const finishSession = () => {
   if (mode.value === 'daily') {
     setDailyReviewStatus(selectedDate.value, true);
   }
+  refreshTodayReview();
   backToList();
 };
 
@@ -172,11 +212,49 @@ const goToLearn = () => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full bg-gray-50">
+  <div class="flex flex-col h-full min-h-0 bg-gray-50 relative" style="height: 100%;">
     <!-- ====== 列表视图（复习中心首页） ====== -->
     <div v-if="view === 'list'" class="flex flex-col h-full p-4 space-y-5">
       <div class="flex justify-between items-center">
         <h2 class="text-xl font-bold text-gray-800">复习中心</h2>
+      </div>
+
+      <!-- 今日复习入口 -->
+      <div 
+        @click="startTodayReview"
+        class="rounded-xl p-5 shadow-sm border cursor-pointer hover:shadow-md transition-all active:scale-[0.98]"
+        :class="todayReviewedCount >= todayReviewCount && todayReviewCount > 0
+          ? 'bg-green-50 border-green-200'
+          : 'bg-white border-gray-100'"
+      >
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-4">
+            <div class="p-3 rounded-full" :class="todayReviewedCount >= todayReviewCount && todayReviewCount > 0 ? 'bg-green-100 text-green-600' : 'bg-emerald-100 text-emerald-600'">
+              <RotateCcw class="w-6 h-6" />
+            </div>
+            <div>
+              <h3 class="font-bold text-gray-800">今日复习</h3>
+              <p class="text-sm text-gray-500" v-if="todayReviewCount === 0">暂无可复习的单词</p>
+              <p class="text-sm text-green-600 font-medium" v-else-if="todayReviewedCount >= todayReviewCount">✅ 今日复习已完成</p>
+              <p class="text-sm text-gray-500" v-else>{{ todayReviewCount }} 个单词 · 已复习 {{ todayReviewedCount }}</p>
+            </div>
+          </div>
+          <ArrowRight class="w-5 h-5 text-gray-300" />
+        </div>
+
+        <!-- 复习进度条 -->
+        <div v-if="todayReviewCount > 0" class="mt-3 flex items-center gap-3">
+          <div class="flex-1 bg-gray-100 rounded-full h-1.5">
+            <div 
+              class="h-1.5 rounded-full transition-all duration-500" 
+              :class="todayReviewedCount >= todayReviewCount ? 'bg-green-500' : 'bg-emerald-500'"
+              :style="{ width: `${Math.min(100, Math.round((todayReviewedCount / todayReviewCount) * 100))}%` }"
+            ></div>
+          </div>
+          <span class="text-xs text-gray-400 whitespace-nowrap">
+            {{ todayReviewedCount }}/{{ todayReviewCount }}
+          </span>
+        </div>
       </div>
 
       <!-- 生词本入口 -->
@@ -258,7 +336,7 @@ const goToLearn = () => {
         </button>
         <div class="flex flex-col items-center">
           <span class="font-bold text-gray-800">
-            {{ mode === 'difficult' ? '生词本复习' : `复习` }}
+            {{ mode === 'difficult' ? '生词本复习' : mode === 'todayReview' ? '今日复习' : '复习' }}
           </span>
           <span class="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full mt-1">
             {{ sessionStage === 'reading' ? '认读模式' : '拼写模式' }} {{ currentIndex + 1 }}/{{ words.length }}
@@ -343,8 +421,8 @@ const goToLearn = () => {
         <div class="bg-gray-100 p-4 rounded-full mb-4">
           <BookMarked class="w-8 h-8 text-gray-400" />
         </div>
-        <p class="text-lg font-medium text-gray-700">生词本为空</p>
-        <p class="text-sm text-gray-400 mt-1">在学习过程中将不熟悉的单词加入生词本</p>
+        <p class="text-lg font-medium text-gray-700">{{ mode === 'todayReview' ? '暂无复习单词' : '生词本为空' }}</p>
+        <p class="text-sm text-gray-400 mt-1">{{ mode === 'todayReview' ? '先去学习一些新单词吧' : '在学习过程中将不熟悉的单词加入生词本' }}</p>
         <button @click="backToList" class="mt-4 text-blue-600 font-medium hover:underline">
           返回列表
         </button>

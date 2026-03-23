@@ -1,4 +1,8 @@
 import { Word } from '../types';
+import pronunciationJson from './words_pronunciation.json';
+import dutchRaw from './words_dutch.txt?raw';
+import chineseRaw from './words_chinese.txt?raw';
+import englishRaw from './words_english.txt?raw';
 
 // 从纯文本文件中读取单词数据
 function readWordFile(content: string): Map<number, string> {
@@ -15,7 +19,7 @@ function readWordFile(content: string): Map<number, string> {
     const parts = line.split('|');
     if (parts.length >= 2) {
       const id = parseInt(parts[0].trim(), 10);
-      const word = parts[1].trim();
+      const word = parts.slice(1).join('|').trim(); // 用slice(1).join('|')防止内容本身含有|
       if (!isNaN(id) && word) {
         wordMap.set(id, word);
       }
@@ -54,137 +58,117 @@ const fallbackWords: Word[] = [
     example_cn: "谢谢你的帮助。",
     pronunciation: "[ˈdɑŋk jə ˈʋɛl]"
   },
-  // 这里只保留前50个示例单词，完整数据从文件读取
 ];
-
-// 动态加载单词数据
-async function loadWordsFromFiles(): Promise<Word[]> {
-  try {
-    console.log('正在从纯文本文件加载单词数据...');
-    
-    // 首先尝试从发音数据库生成完整数据
-    console.log('正在生成包含完整发音数据的单词列表...');
-    return await generateWordsFromTemplates(1200);
-    
-  } catch (error) {
-    console.error('从文件加载单词数据失败，使用回退数据:', error);
-    return fallbackWords;
-  }
-}
 
 // 发音数据库缓存
 let pronunciationCache: Map<number, string> | null = null;
 
-// 加载发音数据
-async function loadPronunciationData(): Promise<Map<number, string>> {
+// 加载发音数据（直接使用import导入的JSON）
+function loadPronunciationData(): Map<number, string> {
   if (pronunciationCache) {
     return pronunciationCache;
   }
   
   try {
-    // 动态加载发音数据库
-    const response = await fetch('/src/data/words_pronunciation.json');
-    if (!response.ok) {
-      throw new Error('Failed to load pronunciation data');
-    }
-    
-    const pronunciationData = await response.json();
     const pronunciationMap = new Map<number, string>();
     
     // 将发音数据转换为Map格式
-    Object.keys(pronunciationData.pronunciations).forEach(key => {
-      const id = parseInt(key, 10);
-      const pronunciation = pronunciationData.pronunciations[key];
-      if (!isNaN(id) && pronunciation) {
-        pronunciationMap.set(id, pronunciation);
-      }
-    });
+    const pronunciations = (pronunciationJson as any).pronunciations;
+    if (pronunciations) {
+      Object.keys(pronunciations).forEach(key => {
+        const id = parseInt(key, 10);
+        const pronunciation = pronunciations[key];
+        if (!isNaN(id) && pronunciation) {
+          pronunciationMap.set(id, pronunciation);
+        }
+      });
+    }
     
     pronunciationCache = pronunciationMap;
     console.log(`Loaded pronunciation data for ${pronunciationMap.size} words`);
     return pronunciationMap;
   } catch (error) {
     console.error('Error loading pronunciation data:', error);
-    // 返回空的Map作为fallback
     return new Map();
   }
 }
 
-// 生成基础发音（备用方案）
-function generateBasicPronunciation(dutchWord: string): string {
-  // 简单的发音生成规则作为备用
-  return `[${dutchWord.toLowerCase()}]`;
+// 生成简单的例句
+function generateExample(dutch: string, chinese: string): { example: string; example_cn: string } {
+  // 基于单词生成简单的例句模板
+  const templates = [
+    { nl: `Ik gebruik ${dutch}.`, cn: `我使用${chinese}。` },
+    { nl: `Dit is ${dutch}.`, cn: `这是${chinese}。` },
+    { nl: `Ik heb ${dutch} nodig.`, cn: `我需要${chinese}。` },
+    { nl: `Dat is een ${dutch}.`, cn: `那是一个${chinese}。` },
+    { nl: `Ik ken ${dutch}.`, cn: `我认识${chinese}。` },
+  ];
+  const t = templates[Math.abs(hashCode(dutch)) % templates.length];
+  return { example: t.nl, example_cn: t.cn };
 }
 
-// 从模板生成单词的辅助函数
-async function generateWordsFromTemplates(count: number = 1200): Promise<Word[]> {
-  const words: Word[] = [...fallbackWords];
-  const categories = [
-    { name: "基础动词", dutch: "lopen", chinese: "走", english: "to walk" },
-    { name: "基础动词", dutch: "rennen", chinese: "跑", english: "to run" },
-    { name: "基础动词", dutch: "springen", chinese: "跳", english: "to jump" },
-    { name: "基础动词", dutch: "vallen", chinese: "掉", english: "to fall" },
-    { name: "日常用品", dutch: "pen", chinese: "笔", english: "pen" },
-    { name: "日常用品", dutch: "papier", chinese: "纸", english: "paper" },
-    { name: "日常用品", dutch: "sleutel", chinese: "钥匙", english: "key" },
-    { name: "食物和饮料", dutch: "sap", chinese: "果汁", english: "juice" },
-    { name: "食物和饮料", dutch: "wijn", chinese: "葡萄酒", english: "wine" },
-    { name: "食物和饮料", dutch: "bier", chinese: "啤酒", english: "beer" },
-  ];
-
-  // 加载发音数据
-  const pronunciations = await loadPronunciationData();
-
-  // 从第51个ID开始生成
-  let currentId = 51;
-  while (words.length < count) {
-    for (const category of categories) {
-      if (words.length >= count) break;
-      
-      // 生成荷兰语单词变体
-      let dutchWord = category.dutch;
-      if (currentId % 3 === 0) {
-        dutchWord = category.dutch + 'je';
-      } else if (currentId % 3 === 1) {
-        dutchWord = category.dutch + 'tje';
-      }
-      
-      // 生成中文翻译变体
-      let chineseWord = category.chinese;
-      if (currentId % 3 === 0) {
-        chineseWord = category.chinese + '的';
-      } else if (currentId % 3 === 1) {
-        chineseWord = category.chinese + '子';
-      }
-      
-      // 生成英语翻译变体
-      let englishWord = category.english;
-      if (currentId % 3 === 0) {
-        englishWord = category.english + ' (small)';
-      } else if (currentId % 3 === 1) {
-        englishWord = category.english + ' (big)';
-      }
-
-      // 获取发音数据，如果没有则从发音数据库获取，否则使用备用方案
-      let pronunciation = pronunciations.get(currentId);
-      if (!pronunciation) {
-        pronunciation = generateBasicPronunciation(dutchWord);
-      }
-
-      const word: Word = {
-        id: currentId++,
-        dutch: dutchWord,
-        chinese: chineseWord,
-        english: englishWord,
-        example: `Ik gebruik ${category.dutch}.`,
-        example_cn: `我使用${category.chinese}。`,
-        pronunciation: pronunciation
-      };
-      words.push(word);
-    }
+// 简单的哈希函数用于一致性选择模板
+function hashCode(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash |= 0;
   }
-  
-  return words;
+  return hash;
+}
+
+// 从三个txt文件加载真实单词数据（使用Vite ?raw导入）
+async function loadWordsFromFiles(): Promise<Word[]> {
+  try {
+    console.log('正在从纯文本文件加载单词数据...');
+    
+    // 直接使用已导入的原始文本和发音数据
+    const pronunciations = loadPronunciationData();
+    
+    const dutchMap = readWordFile(dutchRaw);
+    const chineseMap = readWordFile(chineseRaw);
+    const englishMap = readWordFile(englishRaw);
+    
+    console.log(`加载完成: 荷兰语 ${dutchMap.size} 个, 中文 ${chineseMap.size} 个, 英文 ${englishMap.size} 个`);
+    
+    if (dutchMap.size === 0) {
+      throw new Error('荷兰语单词文件为空');
+    }
+    
+    // 以荷兰语文件的ID为基准，合并三种语言
+    const words: Word[] = [];
+    const sortedIds = Array.from(dutchMap.keys()).sort((a, b) => a - b);
+    
+    for (const id of sortedIds) {
+      const dutch = dutchMap.get(id) || '';
+      const chinese = chineseMap.get(id) || '';
+      const english = englishMap.get(id) || '';
+      const pronunciation = pronunciations.get(id) || '';
+      
+      if (!dutch) continue;
+      
+      // 生成例句
+      const { example, example_cn } = generateExample(dutch, chinese || english);
+      
+      words.push({
+        id,
+        dutch,
+        chinese,
+        english,
+        example,
+        example_cn,
+        pronunciation,
+      });
+    }
+    
+    console.log(`成功加载 ${words.length} 个单词`);
+    return words;
+    
+  } catch (error) {
+    console.error('从文件加载单词数据失败，使用回退数据:', error);
+    return fallbackWords;
+  }
 }
 
 // 主导出：异步加载的单词数据
@@ -197,21 +181,18 @@ export async function getWords(): Promise<Word[]> {
   return wordsData;
 }
 
-// 导出示例数据（前50个单词）用于初始渲染
+// 导出示例数据用于初始渲染
 export const exampleWords: Word[] = fallbackWords;
 
-// 用于测试的同步获取函数
+// 用于同步获取函数（数据已加载后使用）
 export function getWordsSync(): Word[] {
-  // 如果已经加载，返回数据
   if (wordsData) {
     return wordsData;
   }
-  
-  // 否则返回示例数据
   return exampleWords;
 }
 
-// 初始化函数
+// 初始化函数 - 在应用启动时调用
 export async function initWords(): Promise<void> {
   if (!wordsData) {
     wordsData = await loadWordsFromFiles();

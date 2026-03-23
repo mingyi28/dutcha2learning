@@ -206,9 +206,9 @@ const formattedEndDate = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full bg-gray-50">
+  <div class="fixed inset-0 flex flex-col bg-gray-50 z-40 max-w-md mx-auto">
     <!-- ====== 总览视图 ====== -->
-    <div v-if="view === 'overview'" class="flex flex-col h-full">
+    <div v-if="view === 'overview'" class="flex flex-col h-full overflow-hidden">
       <!-- 顶部导航 -->
       <div class="flex items-center p-4 border-b border-gray-100 bg-white sticky top-0 z-20 shadow-sm">
         <button @click="$emit('back')" class="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100 mr-3">
@@ -247,7 +247,7 @@ const formattedEndDate = computed(() => {
       </div>
 
       <!-- 分组列表 -->
-      <div class="flex-1 overflow-y-auto px-4 py-4 space-y-3 pb-24">
+      <div class="flex-1 overflow-y-auto px-4 py-4 space-y-3 pb-32" style="min-height: 0;">
         <div 
           v-for="group in groups" 
           :key="group.groupIndex"
@@ -355,7 +355,7 @@ const formattedEndDate = computed(() => {
     </div>
 
     <!-- ====== 复习视图 ====== -->
-    <div v-else-if="view === 'review'" class="flex flex-col h-full">
+    <div v-else-if="view === 'review'" class="flex flex-col h-full overflow-hidden">
       <!-- 复习头部 -->
       <div class="flex justify-between items-center p-4 border-b border-gray-100 bg-white">
         <button @click="backToOverview" class="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100">
