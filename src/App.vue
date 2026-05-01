@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { BookOpen, RotateCcw, Calendar } from 'lucide-vue-next';
+import { BookOpen, RotateCcw, Calendar, GraduationCap } from 'lucide-vue-next';
 
 const route = useRoute();
 </script>
@@ -22,13 +22,23 @@ const route = useRoute();
     <nav class="bg-white border-t border-gray-100 fixed bottom-0 w-full max-w-md z-50 pb-safe">
       <div class="flex justify-around items-center h-16">
         <router-link 
+          to="/courses" 
+          replace
+          class="flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors"
+          :class="(route.path.startsWith('/course') || route.path.startsWith('/thema')) ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'"
+        >
+          <GraduationCap class="w-6 h-6" />
+          <span class="text-xs font-medium">课程学习</span>
+        </router-link>
+
+        <router-link 
           to="/learn" 
           replace
           class="flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors"
           :class="route.path === '/learn' ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'"
         >
           <BookOpen class="w-6 h-6" />
-          <span class="text-xs font-medium">今日学习</span>
+          <span class="text-xs font-medium">单词学习</span>
         </router-link>
         
         <router-link 

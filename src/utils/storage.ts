@@ -434,6 +434,89 @@ function addDaysToDate(dateStr: string, days: number): string {
   return format(result, 'yyyy-MM-dd');
 }
 
+// ========== 课程学习进度相关 ==========
+
+const COURSE_PROGRESS_KEY = 'dutch_app_course_progress';
+
+export interface CourseProgress {
+  completedCourses: string[];  // 已完成的课程ID列表
+  courseLearnedWords: Record<string, number[]>; // 课程ID -> 已学单词索引列表
+  courseReviewCount: Record<string, number>; // 课程ID -> 复习次数
+}
+
+const INITIAL_COURSE_PROGRESS: CourseProgress = {
+  completedCourses: [],
+  courseLearnedWords: {},
+  courseReviewCount: {},
+};
+
+export const getCourseProgress = (): CourseProgress => {
+  const stored = localStorage.getItem(COURSE_PROGRESS_KEY);
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      return { ...INITIAL_COURSE_PROGRESS, ...parsed };
+    } catch (e) {
+      console.error('Failed to parse course progress', e);
+      return { ...INITIAL_COURSE_PROGRESS };
+    }
+  }
+  return { ...INITIAL_COURSE_PROGRESS };
+};
+
+export const saveCourseProgress = (progress: CourseProgress) => {
+  localStorage.setItem(COURSE_PROGRESS_KEY, JSON.stringify(progress));
+};
+
+/** 标记课程为已完成 */
+export const markCourseCompleted = (courseId: string) => {
+  const progress = getCourseProgress();
+  if (!progress.completedCourses.includes(courseId)) {
+    progress.completedCourses.push(courseId);
+  }
+  saveCourseProgress(progress);
+};
+
+/** 检查课程是否已完成 */
+export const isCourseCompleted = (courseId: string): boolean => {
+  const progress = getCourseProgress();
+  return progress.completedCourses.includes(courseId);
+};
+
+/** 记录课程中已学习的单词索引 */
+export const markCourseWordLearned = (courseId: string, wordIndex: number) => {
+  const progress = getCourseProgress();
+  if (!progress.courseLearnedWords[courseId]) {
+    progress.courseLearnedWords[courseId] = [];
+  }
+  if (!progress.courseLearnedWords[courseId].includes(wordIndex)) {
+    progress.courseLearnedWords[courseId].push(wordIndex);
+  }
+  saveCourseProgress(progress);
+};
+
+/** 获取课程已学习的单词数量 */
+export const getCourseLearnedCount = (courseId: string): number => {
+  const progress = getCourseProgress();
+  return progress.courseLearnedWords[courseId]?.length || 0;
+};
+
+/** 记录课程复习次数 */
+export const incrementCourseReviewCount = (courseId: string) => {
+  const progress = getCourseProgress();
+  if (!progress.courseReviewCount[courseId]) {
+    progress.courseReviewCount[courseId] = 0;
+  }
+  progress.courseReviewCount[courseId]++;
+  saveCourseProgress(progress);
+};
+
+/** 获取课程复习次数 */
+export const getCourseReviewCount = (courseId: string): number => {
+  const progress = getCourseProgress();
+  return progress.courseReviewCount[courseId] || 0;
+};
+
 /**
  * 获取学习进度概要
  */
