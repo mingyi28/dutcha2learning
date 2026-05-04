@@ -198,3 +198,33 @@ export async function initWords(): Promise<void> {
     wordsData = await loadWordsFromFiles();
   }
 }
+
+// 基于荷兰语单词文本查找发音的缓存
+let dutchToPronunciationCache: Map<string, string> | null = null;
+
+// 构建荷兰语单词文本 -> 发音的查找表
+function buildDutchPronunciationMap(): Map<string, string> {
+  if (dutchToPronunciationCache) {
+    return dutchToPronunciationCache;
+  }
+
+  const pronunciations = loadPronunciationData();
+  const dutchMap = readWordFile(dutchRaw);
+  const result = new Map<string, string>();
+
+  for (const [id, dutch] of dutchMap.entries()) {
+    const pronunciation = pronunciations.get(id);
+    if (pronunciation && dutch) {
+      result.set(dutch.toLowerCase(), pronunciation);
+    }
+  }
+
+  dutchToPronunciationCache = result;
+  return result;
+}
+
+// 根据荷兰语单词文本查找发音（供课程单词使用）
+export function getPronunciationByDutch(dutch: string): string {
+  const map = buildDutchPronunciationMap();
+  return map.get(dutch.toLowerCase()) || '';
+}

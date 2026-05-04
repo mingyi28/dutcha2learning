@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { Word } from '../types';
 import { Volume2 } from 'lucide-vue-next';
+import { getPronunciationByDutch } from '../data/words';
 
 const props = defineProps<{
   word: Word;
@@ -17,6 +18,15 @@ const isSpeechSupported = ref(false);
 
 onMounted(() => {
   isSpeechSupported.value = 'speechSynthesis' in window;
+});
+
+// 计算实际的发音标注（优先使用单词自带的，否则从发音数据库查找）
+const actualPronunciation = computed(() => {
+  if (props.word.pronunciation && props.word.pronunciation.trim() !== '') {
+    return props.word.pronunciation;
+  }
+  // 从发音数据库中按荷兰语单词文本查找
+  return getPronunciationByDutch(props.word.dutch);
 });
 
 // 改进的语音合成功能
@@ -79,7 +89,7 @@ const stopSpeaking = () => {
 
 // 确保语音数据存在
 const hasPronunciation = (word: Word) => {
-  return word.pronunciation && word.pronunciation.trim() !== '';
+  return actualPronunciation.value !== '';
 };
 </script>
 
@@ -88,25 +98,20 @@ const hasPronunciation = (word: Word) => {
     <div class="text-center mb-6">
       <h2 class="text-4xl font-bold text-blue-600 mb-2">{{ word.dutch }}</h2>
       
-      <!-- 发音标注 - 始终显示 -->
+      <!-- 发音标注和语音按钮 - 同一行显示 -->
       <div class="flex items-center justify-center gap-2 mb-3">
         <p v-if="hasPronunciation(word)" class="text-gray-500 text-lg font-mono bg-gray-50 px-3 py-1 rounded-md">
-          {{ word.pronunciation }}
+          {{ actualPronunciation }}
         </p>
-        <p v-else class="text-gray-400 text-sm font-mono bg-yellow-50 px-2 py-1 rounded-md">
-          发音加载中...
-        </p>
-      </div>
-      
-      <!-- 语音播放按钮组 -->
-      <div class="flex justify-center items-center gap-3">
+        
+        <!-- 语音播放按钮 -->
         <button 
           @click.stop="speak(word.dutch)" 
           :disabled="!isSpeechSupported || isSpeaking"
-          class="inline-flex items-center justify-center p-3 text-blue-600 bg-blue-50 hover:bg-blue-100 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed rounded-full transition-all duration-200 transform hover:scale-105 active:scale-95"
+          class="inline-flex items-center justify-center p-2.5 text-blue-600 bg-blue-50 hover:bg-blue-100 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed rounded-full transition-all duration-200 transform hover:scale-105 active:scale-95"
           :class="{ 'animate-pulse': isSpeaking }"
         >
-          <Volume2 class="w-6 h-6" />
+          <Volume2 class="w-5 h-5" />
         </button>
         
         <button 

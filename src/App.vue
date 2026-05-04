@@ -1,8 +1,27 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { ref, watch } from 'vue';
 import { BookOpen, RotateCcw, Calendar, GraduationCap } from 'lucide-vue-next';
 
 const route = useRoute();
+const router = useRouter();
+
+// 记住用户最后访问的课程相关路径
+const lastCoursePath = ref('/courses');
+
+// 监听路由变化，记录课程相关页面路径
+watch(() => route.path, (newPath) => {
+  if (newPath.startsWith('/course') || newPath.startsWith('/thema')) {
+    lastCoursePath.value = newPath;
+  }
+}, { immediate: true });
+
+// 课程学习tab点击处理：如果已在课程相关页面则不跳转，否则恢复到上次的课程页面
+const handleCoursesClick = () => {
+  if (!(route.path.startsWith('/course') || route.path.startsWith('/thema'))) {
+    router.replace(lastCoursePath.value);
+  }
+};
 </script>
 
 <template>
@@ -21,15 +40,14 @@ const route = useRoute();
     <!-- Bottom Navigation -->
     <nav class="bg-white border-t border-gray-100 fixed bottom-0 w-full max-w-md z-50 pb-safe">
       <div class="flex justify-around items-center h-16">
-        <router-link 
-          to="/courses" 
-          replace
-          class="flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors"
+        <div 
+          @click="handleCoursesClick"
+          class="flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors cursor-pointer"
           :class="(route.path.startsWith('/course') || route.path.startsWith('/thema')) ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'"
         >
           <GraduationCap class="w-6 h-6" />
           <span class="text-xs font-medium">课程学习</span>
-        </router-link>
+        </div>
 
         <router-link 
           to="/learn" 

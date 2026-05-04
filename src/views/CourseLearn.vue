@@ -125,7 +125,7 @@ watch(() => route.query.index, (newIdx) => {
         <span class="text-sm">返回</span>
       </button>
       <h2 class="text-base font-bold text-gray-800 truncate max-w-[50%]">
-        {{ isReviewMode ? '复习模式' : course.name }}
+        {{ isReviewMode ? '复习模式' : (getThemaByCourseId(courseId) ? getThemaByCourseId(courseId)!.name + ' - ' + course.name : course.name) }}
       </h2>
       <button 
         @click="goToWordList" 
@@ -136,7 +136,7 @@ watch(() => route.query.index, (newIdx) => {
     </div>
 
     <!-- 进度条 -->
-    <div v-if="!isCompleted" class="px-4 pt-3">
+    <div v-if="!isCompleted" class="px-4 pt-5">
       <div class="flex items-center justify-between text-xs text-gray-500 mb-1.5">
         <span>{{ isReviewMode ? '复习进度' : '学习进度' }}</span>
         <span>{{ currentIndex + 1 }} / {{ displayWords.length }}</span>
